@@ -42,16 +42,14 @@
   (->> string
       break-by-line
       (map break-by-space)
-      (map process-route-vector)
-      ))
+      (map process-route-vector)))
 
 (defn load-routes-from-file [file]
   ["" (load-routes (slurp (clojure.java.io/resource file)))])
 
-; TODO validate request method
+(def memoised-load-routes-from-file (memoize load-routes-from-file))
 
-;(defn path [action & params]
-;  (apply bidi/path-for routes action params))
+; TODO validate request method
 
 (defn look-up-handler [handler-map]
   (fn [id]
@@ -59,7 +57,7 @@
       (id handler-map)
       (constantly nil))))
 
-(defn scenic-handler [routes-file handler-map]
+(defn scenic-handler [routes handler-map]
   (bidi/make-handler
-   (load-routes-from-file routes-file)
+   routes
    (look-up-handler handler-map)))
