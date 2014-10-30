@@ -50,8 +50,8 @@
 
 ; TODO validate request method
 
-(defn path [action & params]
-  (apply bidi/path-for routes action params))
+;(defn path [action & params]
+;  (apply bidi/path-for routes action params))
 
 (defn look-up-handler [handler-map]
   (fn [id]
@@ -61,5 +61,5 @@
 
 (defn scenic-handler [routes-file handler-map]
   (bidi/make-handler
-   (load-routes-from-file routes-files)
+   (load-routes-from-file routes-file)
    (look-up-handler handler-map)))
