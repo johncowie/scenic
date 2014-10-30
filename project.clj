@@ -1,4 +1,4 @@
-(defproject scenic "0.1.0-SNAPSHOT"
+(defproject scenic "0.2.0-SNAPSHOT"
   :description "Bidi wrapper for pretty text file routes"
   :url "https://github.com/johncowie/scenic"
   :min-lein-version "2.0.0"
