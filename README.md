@@ -16,7 +16,7 @@ POST  /login  login
 
 The ID part is a keyword that points a handler function in a map.  The routes created by ```load-routes-from-file``` can be used in conjunction with the ```scenic-handler```, which creates a ring handler.
 
-```
+```clojure
 (scenic-handler routes {:home (fn [req] "home page")}) 
 ;; => when path with :home is matched, then handler corresponding to :home in handler map will be used.
 ```
