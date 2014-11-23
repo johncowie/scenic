@@ -47,17 +47,25 @@
 (defn load-routes-from-file [file]
   ["" (load-routes (slurp (clojure.java.io/resource file)))])
 
-(def memoised-load-routes-from-file (memoize load-routes-from-file))
-
 ; TODO validate request method
 
 (defn look-up-handler [handler-map]
   (fn [id]
     (or
-      (id handler-map)
+      (get handler-map id)
       (constantly nil))))
 
-(defn scenic-handler [routes handler-map]
-  (bidi/make-handler
-   routes
-   (look-up-handler handler-map)))
+(defn wrap-not-found [handler not-found-handler]
+  (fn [request]
+    (or (handler request)
+        (not-found-handler request))))
+
+(defn scenic-handler
+  ([routes handler-map]
+      (bidi/make-handler
+       routes
+       (look-up-handler handler-map)))
+  ([routes handler-map not-found-handler]
+     (->
+      (scenic-handler routes handler-map)
+      (wrap-not-found not-found-handler))))
