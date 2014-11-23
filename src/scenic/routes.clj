@@ -39,13 +39,13 @@
     [path {method action}]))
 
 (defn load-routes [string]
-  (->> string
-      break-by-line
-      (map break-by-space)
-      (map process-route-vector)))
+  ["" (->> string
+           break-by-line
+           (map break-by-space)
+           (map process-route-vector))])
 
 (defn load-routes-from-file [file]
-  ["" (load-routes (slurp (clojure.java.io/resource file)))])
+  (load-routes (slurp (clojure.java.io/resource file))))
 
 ; TODO validate request method
 
