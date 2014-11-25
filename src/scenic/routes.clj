@@ -1,5 +1,6 @@
 (ns scenic.routes
-  (:require [bidi.bidi :as bidi]))
+  (:require [bidi.bidi :as bidi]
+            [bidi.ring :as ring]))
 
 (defn break-by-line [s]
   (clojure.string/split s #"\s*\n\s*"))
@@ -62,7 +63,7 @@
 
 (defn scenic-handler
   ([routes handler-map]
-      (bidi/make-handler
+      (ring/make-handler
        routes
        (look-up-handler handler-map)))
   ([routes handler-map not-found-handler]
