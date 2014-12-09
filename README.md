@@ -14,7 +14,7 @@ GET   /login  login-form
 POST  /login  login
 ```
 
-Then...
+Then in your app use `load-routes-from-file` and `scenic-routes` functions to create a ring handler.
 
 ```clojure
 (ns my_project.core
