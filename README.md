@@ -2,11 +2,11 @@
 
 Scenic is a simple thin wrapper around http://github.com/juxt/bidi that translates routes in a routes.rb-ish file to a Bidi routes data structure.  
 
-## Usage
+## Example Usage
 
-The ```load-routes-from-file``` function expects a file with lines in the format ```<METHOD> <PATH> <ID>```
+Create a routes file and put it somewhere on the class path (eg. my_project/resources/my_routes.routes). It should have the format ```<METHOD> <PATH> <ID>```
 
-e.g. 
+The `<ID>` is a keyword which should be used to point to a controller function.
 
 ```
 GET   /       home
@@ -14,11 +14,20 @@ GET   /login  login-form
 POST  /login  login
 ```
 
-The ID part is a keyword that points a handler function in a map.  The routes created by ```load-routes-from-file``` can be used in conjunction with the ```scenic-handler```, which creates a ring handler.
+Then...
 
 ```clojure
-(scenic-handler routes {:home (fn [req] "home page")}) 
-;; => when path with :home is matched, then handler corresponding to :home in handler map will be used.
+(ns my_project.core
+  (:require [scenic.routes] :refer :all))
+
+(defn home [request]
+  "hello")
+
+(def handler 
+  (scenic-handler (load-routes-from-file "my_routes.routes") {:home home})
+
+(defn -main [& args]
+  run-server handler {:port 9001})
 ```
 
 ## License
