@@ -27,7 +27,7 @@ Then...
   (scenic-handler (load-routes-from-file "my_routes.routes") {:home home})
 
 (defn -main [& args]
-  run-server handler {:port 9001})
+  (run-server handler {:port 9001}))
 ```
 
 ## License
