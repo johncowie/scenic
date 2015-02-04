@@ -1,15 +1,17 @@
 (ns scenic.routes
-  (:require [bidi.bidi :as bidi]
+  (:require [clojure.java.io :as io]
+            [clojure.string :as string]
+            [bidi.bidi :as bidi]
             [bidi.ring :as ring]))
 
 (defn break-by-line [s]
-  (clojure.string/split s #"\s*\n\s*"))
+  (string/split s #"\s*\n\s*"))
 
 (defn break-by-space [line]
-  (clojure.string/split line #"\s+"))
+  (string/split line #"\s+"))
 
 (def lowercase-keyword
-  (comp keyword clojure.string/lower-case))
+  (comp keyword string/lower-case))
 
 (defn keywordise-path-param [s]
   (if (re-matches #":.+" s)
@@ -46,7 +48,7 @@
            (map process-route-vector))])
 
 (defn load-routes-from-file [file]
-  (load-routes (slurp (clojure.java.io/resource file))))
+  (load-routes (slurp (io/resource file))))
 
 ; TODO validate request method
 
