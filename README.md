@@ -1,3 +1,5 @@
+[![Clojars Project](http://clojars.org/scenic/latest-version.svg)](http://clojars.org/scenic)
+
 # scenic
 
 Scenic is a simple thin wrapper around http://github.com/juxt/bidi that translates routes in a routes.rb-ish file to a Bidi routes data structure.  
