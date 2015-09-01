@@ -1,6 +1,6 @@
 (ns scenic.test.routes
   (:require [midje.sweet :refer :all]
-            [scenic.routes :refer [load-routes scenic-handler]]
+            [scenic.routes :refer [load-routes scenic-handler load-routes-from-file]]
             [bidi.bidi :refer [path-for match-route]]
             [ring.mock.request :refer [request]]
             ))
@@ -19,6 +19,12 @@
              => ["" [["/" {:get :home}]
                      ["/hello" {:get :hello}]]])
        (future-fact "support contexts "))
+
+(facts "Can load routes from file"
+       (fact "loads routes from a file"
+             (load-routes-from-file "examples/routes.txt") => ["" '(["/" {:get :home}])])
+       (fact "throws exception when the file doesn't exist"
+             (load-routes-from-file "xxx") => (throws Exception)))
 
 (facts "about scenic-handler"
  (fact "can make handler from routes file and handler map"

@@ -48,7 +48,9 @@
            (map process-route-vector))])
 
 (defn load-routes-from-file [file]
-  (load-routes (slurp (io/resource file))))
+  (if (.exists (io/file file))
+    (load-routes (slurp file))
+    (throw (ex-info "Routes file not found" {:path file}))))
 
 ; TODO validate request method
 
