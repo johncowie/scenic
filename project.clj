@@ -9,4 +9,5 @@
                  ]
   :profiles {:dev {:dependencies [[midje "1.6.3"]
                                   [ring-mock "0.1.5"]]
+                   :resource-paths ["examples"]
                      :plugins [[lein-midje "3.1.1"]]}})
