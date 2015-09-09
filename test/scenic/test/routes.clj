@@ -22,9 +22,9 @@
 
 (facts "Can load routes from file"
        (fact "loads routes from a file"
-             (load-routes-from-file "examples/routes.txt") => ["" '(["/" {:get :home}])])
+             (load-routes-from-file "routes.txt") => ["" '(["/" {:get :home}])])
        (fact "throws exception when the file doesn't exist"
-             (load-routes-from-file "xxx") => (throws Exception)))
+             (load-routes-from-file "xxx") => (throws Exception "Routes file not found")))
 
 (facts "about scenic-handler"
  (fact "can make handler from routes file and handler map"

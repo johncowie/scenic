@@ -1,7 +1,6 @@
 (ns scenic.routes
   (:require [clojure.java.io :as io]
             [clojure.string :as string]
-            [bidi.bidi :as bidi]
             [bidi.ring :as ring]))
 
 (defn break-by-line [s]
@@ -48,8 +47,8 @@
            (map process-route-vector))])
 
 (defn load-routes-from-file [file]
-  (if (.exists (io/file file))
-    (load-routes (slurp file))
+  (if-let [resource (io/resource file)]
+    (load-routes (slurp resource))
     (throw (ex-info "Routes file not found" {:path file}))))
 
 ; TODO validate request method
