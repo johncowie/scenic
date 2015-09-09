@@ -2,3 +2,4 @@
 - validation of HTTP methods
 - lein template
 - context nesting
+- cljs support
