@@ -1,0 +1,4 @@
+- support regex
+- validation of HTTP methods
+- lein template
+- context nesting
