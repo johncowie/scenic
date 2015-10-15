@@ -1,9 +1,13 @@
 (ns scenic.test.routes
   (:require [midje.sweet :refer :all]
-            [scenic.routes :refer [load-routes scenic-handler load-routes-from-file]]
+            [scenic.routes :refer [parse-path-segment load-routes scenic-handler load-routes-from-file regex]]
             [bidi.bidi :refer [path-for match-route]]
-            [ring.mock.request :refer [request]]
-            ))
+            [ring.mock.request :refer [request]]))
+
+(facts "Processing path params"
+       (parse-path-segment "bob") => "bob"
+       (parse-path-segment ":dave") => :dave
+       (parse-path-segment ":id~>[a-b]*") => [(regex "[a-b]*") :id])
 
 (facts "Can load routes"
        (fact "basic route"
@@ -18,6 +22,9 @@
              (load-routes "GET / home \n      \n    \n GET /hello hello")
              => ["" [["/" {:get :home}]
                      ["/hello" {:get :hello}]]])
+       (fact "can specify a regex"
+             (load-routes "GET /:name~>[a-z]*/hello hello")
+                    => ["" [[["/" [(regex "[a-z]*") :name] "/hello"] {:get :hello}]]])
        (future-fact "support contexts "))
 
 (facts "Can load routes from file"

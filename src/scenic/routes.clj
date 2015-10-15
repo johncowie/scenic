@@ -3,6 +3,11 @@
             [clojure.string :as string]
             [bidi.ring :as ring]))
 
+(def regex (memoize re-pattern))
+
+(defn first-not-nil-> [v & fns]
+  (first (drop-while not (map #(% v) fns))))
+
 (defn break-by-line [s]
   (string/split s #"\s*\n\s*"))
 
@@ -12,10 +17,20 @@
 (def lowercase-keyword
   (comp keyword string/lower-case))
 
-(defn keywordise-path-param [s]
-  (if (re-matches #":.+" s)
-    (-> s (subs 1) keyword)
-    s))
+(defn parse-param [s]
+  (when-let [[_ capture] (re-matches #":(.+)" s)]
+    (keyword capture)))
+
+(defn parse-param-with-regex [s]
+  (when-let [[_ param-capture regex-capture] (re-matches #":(.+)~>(.+)" s)]
+    [(regex regex-capture) (keyword param-capture)]))
+
+(defn parse-path-segment [s]
+  (first-not-nil->
+    s
+    parse-param-with-regex
+    parse-param
+    identity))
 
 (defn join-string-group [[f & r]]
   (if (string? f)
@@ -25,14 +40,17 @@
 (defn if-one-return-single [[f & r :as v]]
   (if (nil? r) f v))
 
+(defn join-adjacent-strings [v]
+  (->> v
+       (partition-by string?)
+       (map join-string-group)
+       vec))
+
 (defn process-path [path]
-  (->>
-   (re-seq #"/|[^/]+" path)
-   (map keywordise-path-param)
-   (partition-by string?)
-   (map join-string-group)
-   vec
-   if-one-return-single))
+  (->> (re-seq #"/|[^/]+" path)
+       (map parse-path-segment)
+       join-adjacent-strings
+       if-one-return-single))
 
 (defn process-route-vector [[method-str path-str action-str]]
   (let [method (lowercase-keyword method-str)
@@ -66,10 +84,10 @@
 
 (defn scenic-handler
   ([routes handler-map]
-      (ring/make-handler
-       routes
-       (look-up-handler handler-map)))
+   (ring/make-handler
+     routes
+     (look-up-handler handler-map)))
   ([routes handler-map not-found-handler]
-     (->
-      (scenic-handler routes handler-map)
-      (wrap-not-found not-found-handler))))
+   (->
+     (scenic-handler routes handler-map)
+     (wrap-not-found not-found-handler))))
